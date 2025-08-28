@@ -28,7 +28,6 @@ import { useRouter } from "next/navigation";
 import { useConversationById } from "@/hooks/useConversation";
 import { useCredits } from "@/hooks/useCredits";
 import { UpgradeCTA } from "@/components/ui/upgrade-cta";
-import { useConversationContext } from "@/contexts/conversation-context";
 import { useGlobalKeyPress } from "@/hooks/useGlobalKeyPress";
 import { useExecutionContext } from "@/contexts/execution-context";
 

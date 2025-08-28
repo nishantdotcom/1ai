@@ -104,7 +104,7 @@ export function UIStructure() {
   return (
     <Sidebar className={`border py-2 pl-2`}>
       <SidebarContent className="h-full justify-between">
-        <SidebarGroup className="flex flex-col gap-8">
+        <SidebarGroup className="flex flex-col gap-4">
           <SidebarHeader className="sticky top-0 !p-0">
             <div className="flex w-full flex-col items-center gap-2 rounded-lg">
               <div className="flex w-full items-center gap-2 rounded-lg p-1 text-lg justify-between">

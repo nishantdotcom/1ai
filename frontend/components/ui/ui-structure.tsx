@@ -38,6 +38,7 @@ import { useUser } from "@/hooks/useUser";
 import Link from "next/link";
 import { useExecutionContext } from "@/contexts/execution-context";
 import { Execution } from "@/hooks/useExecution";
+import { BACKEND_URL, cn } from "@/lib/utils";
 
 export function UIStructure() {
   const [uiExecutions, setUiExecutions] = useState<Execution[]>([]);
@@ -62,10 +63,17 @@ export function UIStructure() {
     }
   }, [executions, searchTerm]);
 
-  const handleDeleteExecution = (executionId: string) => {
+  const handleDeleteExecution = async (executionId: string) => {
     try {
-      toast.success("Chat deleted successfully");
+      await fetch(`${BACKEND_URL}/ai/chat/${executionId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+      });
       setUiExecutions(executions.filter((execution) => execution.id !== executionId));
+      toast.success("Chat deleted successfully");
     } catch (error) {
       console.error("Error deleting chat:", error);
     }
@@ -148,10 +156,16 @@ export function UIStructure() {
                             {execution.title}
                           </span>
                           <div
-                            className={`absolute top-0 right-0 z-[5] h-full w-12 rounded-r-md blur-[2em] ${execution.id === hoverChatId ? "bg-primary" : ""}`}
+                            className={cn(
+                              "absolute top-0 right-0 z-[5] h-full w-12 rounded-r-md blur-[2em]", 
+                              execution.id === hoverChatId && "bg-primary"
+                            )}
                           />
                           <div
-                            className={`absolute top-1/2 -right-16 z-[10] flex h-full -translate-y-1/2 items-center justify-center gap-1.5 rounded-r-md bg-transparent px-1 backdrop-blur-xl transition-all duration-200 ease-in-out ${execution.id === hoverChatId ? "group-hover:right-0" : ""}`}
+                            className={cn(
+                              "absolute top-1/2 -right-16 z-[10] flex h-full -translate-y-1/2 items-center justify-center gap-1.5 rounded-r-md bg-transparent px-1 backdrop-blur-xl transition-all duration-200 ease-in-out",
+                              execution.id === hoverChatId && "group-hover:right-0"
+                            )}
                           >
                             <div
                               className="flex items-center justify-center rounded-md"

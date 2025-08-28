@@ -117,8 +117,7 @@ export function UIStructure() {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  const id = createNewExecution();
-                  router.push(`/ask/${id}`);
+                  router.push(`/ask`);
                 }}
                 variant="accent"
                 className="w-full"

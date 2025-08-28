@@ -32,7 +32,7 @@ import {
   TrashIcon,
 } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "../svgs/logo";
 import { useUser } from "@/hooks/useUser";
 import Link from "next/link";
@@ -47,6 +47,9 @@ export function UIStructure() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { executions, loading, createNewExecution } = useExecutionContext();
   const router = useRouter();
+  
+  const pathname = usePathname();
+  const currentConversationId = pathname.split("/").pop();
 
   useEffect(() => {
     if (executions) {
@@ -86,10 +89,11 @@ export function UIStructure() {
     {
       id: "article-summarizer",
       name: "Article Summarizer",
-      description: "Summarize long articles into concise, easy-to-read summaries",
+      description:
+        "Summarize long articles into concise, easy-to-read summaries",
       icon: "📄",
-      credits: 2
-    }
+      credits: 2,
+    },
   ];
 
   const handleAppNavigation = (appId: string) => {
@@ -146,7 +150,7 @@ export function UIStructure() {
                 : uiExecutions.map((execution: Execution) => (
                     <SidebarMenuItem key={execution.id}>
                       <SidebarMenuButton
-                        className="group hover:bg-primary/20 relative"
+                        className={`group relative w-full text-left hover:bg-primary/20 transition ${execution.id === currentConversationId ? "bg-primary/20" : ""}`}
                         onMouseEnter={() => setHoverChatId(execution.id)}
                         onMouseLeave={() => setHoverChatId("")}
                         onClick={() => router.push(`/ask/${execution.id}`)}
@@ -186,7 +190,9 @@ export function UIStructure() {
 
                             <div
                               className="flex items-center justify-center rounded-md"
-                              onClick={() => handleDeleteExecution(execution.id)}
+                              onClick={() =>
+                                handleDeleteExecution(execution.id)
+                              }
                             >
                               <TrashIcon
                                 weight={"bold"}
@@ -212,11 +218,7 @@ export function UIStructure() {
           )}
           <Dialog open={isAppsDialogOpen} onOpenChange={setIsAppsDialogOpen}>
             <DialogTrigger asChild>
-              <Button
-                variant="secondary"
-                className="w-full"
-                size="lg"
-              >
+              <Button variant="secondary" className="w-full" size="lg">
                 AI Apps
               </Button>
             </DialogTrigger>
@@ -224,10 +226,11 @@ export function UIStructure() {
               <DialogHeader>
                 <DialogTitle>AI Apps</DialogTitle>
                 <DialogDescription>
-                  Choose from our collection of AI-powered applications to enhance your productivity.
+                  Choose from our collection of AI-powered applications to
+                  enhance your productivity.
                 </DialogDescription>
               </DialogHeader>
-              
+
               <div className="grid gap-4 py-4">
                 {availableApps.map((app) => (
                   <div
@@ -238,7 +241,9 @@ export function UIStructure() {
                     <div className="text-2xl">{app.icon}</div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg">{app.name}</h3>
-                      <p className="text-sm text-muted-foreground">{app.description}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {app.description}
+                      </p>
                       <div className="flex items-center gap-1 mt-1">
                         <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
                           {app.credits} credits per use
@@ -248,7 +253,7 @@ export function UIStructure() {
                   </div>
                 ))}
               </div>
-              
+
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant="outline">Close</Button>

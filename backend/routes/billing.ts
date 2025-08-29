@@ -27,12 +27,14 @@ const plans = [{
     {
       plan_id: "plan_R8lQ4opIQbMwPK",
       monthly_price: 99,
+      annual_price: 999,
       currency: "INR",
       symbol: "₹"
     },
     {
       plan_id: "plan_R8lOdy52StfdXe",
       monthly_price: 1,
+      annual_price: 10,
       currency: "USD",
       symbol: "$"
     }
@@ -55,7 +57,7 @@ billingRouter.post("/init-subscribe", authMiddleware, async (req, res) => {
   if (planType === "yearly") {
     // Treat yearly as a one-time payment: compute annual amount (monthly_price * 10)
     wp = plans[0]?.pricing_currency[0];
-    const annualAmount = wp.monthly_price * 10 * 100;
+    const annualAmount = wp.annual_price * 100;
 
     const orderData = {
       amount: annualAmount,
@@ -259,7 +261,7 @@ billingRouter.post("/verify-payment", authMiddleware, async (req, res) => {
     }
 
     // Check if this is a yearly one-time payment or monthly subscription
-    const isYearlyPlan = paymentRecord.amount >= 99000; // Yearly plan amount (99 * 10)
+    const isYearlyPlan = paymentRecord.amount >= 99900; // Yearly plan amount (99 * 10)
     
     if (isYearlyPlan) {
       // Handle yearly one-time payment

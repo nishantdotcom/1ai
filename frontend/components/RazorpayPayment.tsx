@@ -74,7 +74,7 @@ const RazorpayPayment: React.FC<RazorpayPaymentProps> = ({
           // Handle yearly plan as one-time payment
           const options = {
             key: res.data.rzpKey || RZP_KEY,
-            amount: res.data.amount,
+            amount: res.data.amount * 100,
             currency: res.data.currency,
             name: "1AI",
             description: `${plan.name} Plan - One-time Payment`,
@@ -160,8 +160,6 @@ const RazorpayPayment: React.FC<RazorpayPaymentProps> = ({
                 const razorpay_payment_id = response.razorpay_payment_id;
 
                 try {
-                  console.log(BACKEND_URL);
-                  console.log(response);
                   const response2 = await axios.post(
                       `${BACKEND_URL}/billing/verify-payment`,
                       {

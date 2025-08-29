@@ -55,7 +55,7 @@ billingRouter.post("/init-subscribe", authMiddleware, async (req, res) => {
   if (planType === "yearly") {
     // Treat yearly as a one-time payment: compute annual amount (monthly_price * 10)
     wp = plans[0]?.pricing_currency[0];
-    const annualAmount = wp.monthly_price * 10;
+    const annualAmount = wp.monthly_price * 10 * 100;
 
     const orderData = {
       amount: annualAmount,
@@ -233,7 +233,7 @@ billingRouter.post("/verify-payment", authMiddleware, async (req, res) => {
 
   if (!signature || !razorpay_payment_id) {
     return res.status(400).json({ 
-      success: false, 
+      success: false,
       error: "Missing signature or payment ID" 
     });
   }
@@ -259,7 +259,7 @@ billingRouter.post("/verify-payment", authMiddleware, async (req, res) => {
     }
 
     // Check if this is a yearly one-time payment or monthly subscription
-    const isYearlyPlan = paymentRecord.amount >= 990; // Yearly plan amount (99 * 10)
+    const isYearlyPlan = paymentRecord.amount >= 99000; // Yearly plan amount (99 * 10)
     
     if (isYearlyPlan) {
       // Handle yearly one-time payment

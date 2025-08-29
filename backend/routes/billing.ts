@@ -268,7 +268,7 @@ billingRouter.post("/verify-payment", authMiddleware, async (req, res) => {
       // Generate signature using order_id for one-time payments
       const expectedSignature = crypto
         .createHmac("sha256", razorPayCredentials.secret)
-        .update(razorpay_payment_id + "|" + orderId)
+        .update(orderId + "|" + razorpay_payment_id)
         .digest("hex");
 
       // Verify signature

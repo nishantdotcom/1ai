@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  CurrencyCircleDollarIcon,
   CheckIcon,
-  StarIcon,
-  LightningIcon,
+  StarIcon
 } from "@phosphor-icons/react/dist/ssr";
 import RazorpayPayment from "@/components/RazorpayPayment";
+import { useEffect } from "react";
+import { useCredits } from "@/hooks/useCredits";
 
 const pricingPlans = [
   {
@@ -42,6 +42,15 @@ const pricingPlans = [
 
 export default function PricingPage() {
   const router = useRouter();
+  const { userCredits, isPending } = useCredits();
+
+  useEffect(() => {
+    if (isPending) return;
+
+    if (userCredits?.isPremium) {
+      router.push("/ask");
+    }
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto pt-8 pb-4">

@@ -102,6 +102,16 @@ const UIInput = ({
     loading: isLoading,
   });
 
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+    
+    const timeoutId = setTimeout(scrollToBottom, 50);
+    
+    return () => clearTimeout(timeoutId);
+  }, [messages]);
+
   const processStream = async (response: Response, userMessage: string) => {
     if (!response.ok) {
       // Handle credit-related errors

@@ -30,6 +30,8 @@ import { useCredits } from "@/hooks/useCredits";
 import { UpgradeCTA } from "@/components/ui/upgrade-cta";
 import { useGlobalKeyPress } from "@/hooks/useGlobalKeyPress";
 import { useExecutionContext } from "@/contexts/execution-context";
+import { QUERY_KEYS } from "@/constants/query-keys";
+import { useQueryClient } from "@tanstack/react-query";
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
@@ -75,8 +77,8 @@ const UIInput = ({
   const {
     userCredits,
     isLoading: isCreditsLoading,
-    refetchCredits,
   } = useCredits();
+  const queryClient = useQueryClient();
   const { refreshExecutions } = useExecutionContext();
   const router = useRouter();
 
@@ -108,7 +110,7 @@ const UIInput = ({
           const errorData = await response.json();
           if (errorData.message?.includes("Insufficient credits")) {
             // Refetch credits to update UI
-            await refetchCredits();
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CREDITS] });
           }
         } catch (e) {
           console.error("Error parsing error response:", e);
@@ -222,7 +224,8 @@ const UIInput = ({
     } finally {
       setIsLoading(false);
       abortControllerRef.current = null;
-      await refreshExecutions();
+     refreshExecutions()
+  queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CREDITS] });
     }
   };
 
@@ -291,6 +294,10 @@ const UIInput = ({
       }, 0);
     } catch (error) {
       console.error("Error preparing request:", error);
+      setIsLoading(false);
+    } finally {
+      refreshExecutions()
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CREDITS] });
       setIsLoading(false);
     }
   };

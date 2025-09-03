@@ -504,12 +504,6 @@ const UIInput = ({
                   <div className="font-medium">
                     {message.role === "assistant" && (
                       <div className="invisible flex w-fit items-center gap-2 text-base font-semibold group-hover:visible">
-                        <button className="hover:bg-accent flex size-7 items-center justify-center rounded-lg">
-                          <ThumbsUpIcon weight="bold" />
-                        </button>
-                        <button className="hover:bg-accent flex size-7 items-center justify-center rounded-lg">
-                          <ThumbsDownIcon weight="bold" />
-                        </button>
                         <button
                           onClick={() => handleCopy(message.content)}
                           className="hover:bg-accent flex size-7 items-center justify-center rounded-lg"

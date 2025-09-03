@@ -286,7 +286,7 @@ export function UIStructure() {
               Privacy
             </Link>
             <Link href="/refund" target="_target" className="text-xs">
-              Refund
+              Refund Policy
             </Link>
           </div>
         </SidebarFooter>

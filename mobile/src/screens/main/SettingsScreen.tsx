@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 
-import { authAPI } from "../../services/api";
+import { authAPI, chatAPI } from "../../services/api";
 import { secureStorage } from "../../utils/storage";
 import { User } from "../../types/api";
 import { spacing, fontSize, borderRadius } from "../../constants/theme";
@@ -39,10 +39,21 @@ export const ProfileScreen: React.FC = () => {
 
   const loadUserData = async () => {
     try {
-      const response = await authAPI.getMe();
-      setUser(response.user);
+      const [userResponse, creditsResponse] = await Promise.all([
+        authAPI.getMe(),
+        chatAPI.getCredits().catch(() => ({ credits: 0, isPremium: false }))
+      ]);
+      
+      // Merge user data with credits data
+      const userWithCredits = {
+        ...userResponse.user,
+        credits: creditsResponse.credits || 0,
+        isPremium: creditsResponse.isPremium || false
+      };
+      
+      setUser(userWithCredits);
     } catch (error) {
-      console.error("Failed to load user data:", error);
+      // Failed to load user data
     }
   };
 
@@ -99,19 +110,6 @@ export const ProfileScreen: React.FC = () => {
       title: "Refund Policy",
       icon: "card",
       action: () => handleLinkPress("https://1ai.co/refund", "Refund Policy"),
-    },
-    {
-      id: "about",
-      title: "About 1ai",
-      subtitle: "Version 1.0.0 - Multi-Model AI Chat Platform",
-      icon: "information-circle",
-      action: () => {
-        Toast.show({
-          type: "info",
-          text1: "1ai",
-          text2: "Version 1.0.0 - Multi-Model AI Chat Platform",
-        });
-      },
     },
     {
       id: "signout",
@@ -214,7 +212,7 @@ export const ProfileScreen: React.FC = () => {
               <Text style={styles.userEmail}>{user.email}</Text>
               <View style={styles.userStats}>
                 <View style={styles.statItem}>
-                  <Text style={styles.statValue}>{user.credits}</Text>
+                  <Text style={styles.statValue}>{user.credits ?? 0}</Text>
                   <Text style={styles.statLabel}>Credits</Text>
                 </View>
                 <View style={styles.statDivider} />
@@ -222,10 +220,10 @@ export const ProfileScreen: React.FC = () => {
                   <Text
                     style={[
                       styles.statValue,
-                      user.isPremium ? styles.premiumText : styles.freeText,
+                      (user.isPremium ?? false) ? styles.premiumText : styles.freeText,
                     ]}
                   >
-                    {user.isPremium ? "Premium" : "Free"}
+                    {(user.isPremium ?? false) ? "Premium" : "Free"}
                   </Text>
                   <Text style={styles.statLabel}>Plan</Text>
                 </View>

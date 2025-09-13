@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Clipboard,
   Alert,
   ActivityIndicator,
 } from "react-native";
@@ -64,8 +63,19 @@ export const ChatScreen: React.FC = () => {
 
   const loadUserData = async () => {
     try {
-      const response = await authAPI.getMe();
-      setUser(response.user);
+      const [userResponse, creditsResponse] = await Promise.all([
+        authAPI.getMe(),
+        chatAPI.getCredits().catch(() => ({ credits: 0, isPremium: false }))
+      ]);
+      
+      // Merge user data with credits data
+      const userWithCredits = {
+        ...userResponse.user,
+        credits: creditsResponse.credits || 0,
+        isPremium: creditsResponse.isPremium || false
+      };
+      
+      setUser(userWithCredits);
     } catch (error) {
       // If user is not authenticated, they can still view the chat screen but won't be able to send messages
     }
@@ -181,15 +191,6 @@ export const ChatScreen: React.FC = () => {
     }
   };
 
-  const handleCopyMessage = (content: string) => {
-    Clipboard.setString(content);
-    Toast.show({
-      type: "success",
-      text1: "Copied",
-      text2: "Message copied to clipboard",
-    });
-  };
-
   const clearConversation = () => {
     Alert.alert(
       "Clear Conversation",
@@ -206,14 +207,7 @@ export const ChatScreen: React.FC = () => {
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
-    <MessageBubble
-      message={item}
-      onCopy={
-        item.role === "agent"
-          ? () => handleCopyMessage(item.content)
-          : undefined
-      }
-    />
+    <MessageBubble message={item} />
   );
 
   const renderHeader = () => (
@@ -229,7 +223,9 @@ export const ChatScreen: React.FC = () => {
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Chat</Text>
           {user && (
-            <Text style={styles.creditsText}>{user.credits} credits</Text>
+            <Text style={styles.creditsText}>
+              {user.credits ?? 0} credits
+            </Text>
           )}
         </View>
       </View>
@@ -376,7 +372,7 @@ const createStyles = (colors: any) =>
       alignItems: "center",
       justifyContent: "space-between",
       paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.md,
+      paddingVertical: spacing.sm,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
@@ -453,8 +449,8 @@ const createStyles = (colors: any) =>
       color: colors.primaryForeground,
     },
     inputContainer: {
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
       borderTopWidth: 1,
       borderTopColor: colors.border,
       backgroundColor: colors.background,
@@ -464,26 +460,28 @@ const createStyles = (colors: any) =>
       alignItems: "flex-end",
       backgroundColor: colors.secondary,
       borderRadius: borderRadius.xl,
-      paddingHorizontal: spacing.md,
-      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      minHeight: 56,
     },
     textInput: {
       flex: 1,
       fontSize: fontSize.base,
       color: colors.foreground,
-      maxHeight: 100,
-      minHeight: 36,
-      paddingVertical: spacing.xs,
-      paddingRight: spacing.sm,
+      maxHeight: 120,
+      minHeight: 44,
+      paddingVertical: spacing.sm,
+      paddingRight: spacing.md,
+      lineHeight: 22,
     },
     sendButton: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
       backgroundColor: colors.primary,
       alignItems: "center",
       justifyContent: "center",
-      marginLeft: spacing.xs,
+      marginLeft: spacing.sm,
     },
     sendButtonDisabled: {
       opacity: 0.5,

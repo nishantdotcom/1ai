@@ -1,8 +1,8 @@
 export interface User {
   id: string;
   email: string;
-  credits: number;
-  isPremium: boolean;
+  credits?: number;
+  isPremium?: boolean;
 }
 
 export interface SignInRequest {

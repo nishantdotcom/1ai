@@ -140,7 +140,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
       const response = await chatAPI.getConversations();
       setConversations(response.conversations || []);
     } catch (error) {
-      console.error("Failed to load conversations:", error);
+      // Failed to load conversations
     } finally {
       setLoading(false);
     }

@@ -99,20 +99,21 @@ export const chatAPI = {
   ) => {
     try {
       const token = await SecureStore.getItemAsync('auth_token');
+      const requestBody = { message, model, conversationId };
 
       const response = await fetch(`${API_BASE_URL}/ai/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
+          'Accept': 'text/event-stream',
         },
-        body: JSON.stringify({ message, model, conversationId }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
         
-        // Try to parse JSON error message
         try {
           const errorData = JSON.parse(errorText);
           throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -121,12 +122,44 @@ export const chatAPI = {
         }
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-
-      if (!reader) {
-        throw new Error('No reader available');
+      // Check if body exists and is readable
+      if (!response.body) {
+        // Try to read as text and parse manually
+        const responseText = await response.text();
+        
+        if (responseText) {
+          const lines = responseText.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const jsonData = line.slice(6);
+              
+              try {
+                const data = JSON.parse(jsonData);
+                
+                if (data.content) {
+                  onChunk(data.content);
+                } else if (data.done) {
+                  onComplete();
+                  return;
+                } else if (data.error) {
+                  onError(data.error);
+                  return;
+                }
+              } catch (e) {
+                // Ignore malformed lines
+              }
+            }
+          }
+          onComplete();
+          return;
+        }
+        
+        throw new Error('Response body is not available for streaming');
       }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
       while (true) {
         const { done, value } = await reader.read();
@@ -141,8 +174,10 @@ export const chatAPI = {
         
         for (const line of lines) {
           if (line.startsWith('data: ')) {
+            const jsonData = line.slice(6);
+            
             try {
-              const data = JSON.parse(line.slice(6));
+              const data = JSON.parse(jsonData);
               
               if (data.content) {
                 onChunk(data.content);
@@ -160,7 +195,8 @@ export const chatAPI = {
         }
       }
     } catch (error) {
-      onError(error instanceof Error ? error.message : 'Unknown error');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      onError(errorMessage);
     }
   },
 };

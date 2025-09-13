@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,13 +7,13 @@ import {
   Modal,
   FlatList,
   ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Model } from '../../types/api';
-import { MODELS_DATA } from '../../utils/data';
-import { spacing, fontSize, borderRadius } from '../../constants/theme';
-import { useTheme } from '../../contexts/ThemeContext';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Model } from "../../types/api";
+import { MODELS_DATA } from "../../utils/data";
+import { spacing, fontSize, borderRadius } from "../../constants/theme";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface ModelSelectorProps {
   selectedModel: string;
@@ -30,7 +30,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const styles = createStyles(colors);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const selectedModelData = MODELS_DATA.find((model: Model) => model.id === selectedModel);
+  const selectedModelData = MODELS_DATA.find(
+    (model: Model) => model.id === selectedModel
+  );
   const freeModels = MODELS_DATA.filter((model: Model) => !model.isPremium);
   const premiumModels = MODELS_DATA.filter((model: Model) => model.isPremium);
 
@@ -55,11 +57,13 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       >
         <View style={styles.modelInfo}>
           <View style={styles.modelHeader}>
-            <Text style={[
-              styles.modelName,
-              isSelected && styles.selectedModelName,
-              isDisabled && styles.disabledModelName,
-            ]}>
+            <Text
+              style={[
+                styles.modelName,
+                isSelected && styles.selectedModelName,
+                isDisabled && styles.disabledModelName,
+              ]}
+            >
               {item.name}
             </Text>
             {item.isPremium && (
@@ -69,16 +73,20 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
               </View>
             )}
           </View>
-          <Text style={[
-            styles.modelDescription,
-            isDisabled && styles.disabledModelDescription,
-          ]}>
+          <Text
+            style={[
+              styles.modelDescription,
+              isDisabled && styles.disabledModelDescription,
+            ]}
+          >
             {item.description}
           </Text>
-          <Text style={[
-            styles.modelProvider,
-            isDisabled && styles.disabledModelProvider,
-          ]}>
+          <Text
+            style={[
+              styles.modelProvider,
+              isDisabled && styles.disabledModelProvider,
+            ]}
+          >
             by {item.provider}
           </Text>
         </View>
@@ -97,7 +105,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       >
         <View style={styles.selectorContent}>
           <Text style={styles.selectedModelText} numberOfLines={1}>
-            {selectedModelData?.name || 'Select Model'}
+            {selectedModelData?.name || "Select Model"}
           </Text>
           {selectedModelData?.isPremium && (
             <View style={styles.miniPremiumBadge}>
@@ -105,7 +113,11 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             </View>
           )}
         </View>
-        <Ionicons name="chevron-down" size={16} color={colors.mutedForeground} />
+        <Ionicons
+          name="chevron-down"
+          size={16}
+          color={colors.mutedForeground}
+        />
       </TouchableOpacity>
 
       <Modal
@@ -139,7 +151,11 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
               <Text style={styles.sectionTitle}>Premium Models</Text>
               {!isPremium && (
                 <View style={styles.upgradePrompt}>
-                  <Ionicons name="lock-closed" size={16} color={colors.primary} />
+                  <Ionicons
+                    name="lock-closed"
+                    size={16}
+                    color={colors.primary}
+                  />
                   <Text style={styles.upgradeText}>
                     Upgrade to Premium to access advanced models
                   </Text>
@@ -159,146 +175,147 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   );
 };
 
-const createStyles = (colors: any) => StyleSheet.create({
-  selectorButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.secondary,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.lg,
-    minWidth: 120,
-  },
-  selectorContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  selectedModelText: {
-    fontSize: fontSize.sm,
-    fontWeight: '600',
-    color: colors.foreground,
-    flex: 1,
-  },
-  miniPremiumBadge: {
-    marginLeft: spacing.xs,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  modalTitle: {
-    fontSize: fontSize.xl,
-    fontWeight: 'bold',
-    color: colors.foreground,
-  },
-  closeButton: {
-    padding: spacing.xs,
-  },
-  modalContent: {
-    flex: 1,
-    paddingHorizontal: spacing.lg,
-  },
-  section: {
-    marginVertical: spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: 'bold',
-    color: colors.foreground,
-    marginBottom: spacing.md,
-  },
-  upgradePrompt: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.accent,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.md,
-    marginBottom: spacing.md,
-  },
-  upgradeText: {
-    fontSize: fontSize.sm,
-    color: colors.accentForeground,
-    marginLeft: spacing.xs,
-    fontWeight: '500',
-  },
-  modelItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.md,
-    marginBottom: spacing.sm,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  selectedModelItem: {
-    borderColor: colors.primary,
-    backgroundColor: colors.accent,
-  },
-  disabledModelItem: {
-    opacity: 0.6,
-  },
-  modelInfo: {
-    flex: 1,
-  },
-  modelHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.xs,
-  },
-  modelName: {
-    fontSize: fontSize.base,
-    fontWeight: '600',
-    color: colors.foreground,
-  },
-  selectedModelName: {
-    color: colors.accentForeground,
-  },
-  disabledModelName: {
-    color: colors.mutedForeground,
-  },
-  premiumBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.background,
-    paddingHorizontal: spacing.xs,
-    paddingVertical: 2,
-    borderRadius: 10,
-    marginLeft: spacing.sm,
-  },
-  premiumText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginLeft: 2,
-  },
-  modelDescription: {
-    fontSize: fontSize.sm,
-    color: colors.mutedForeground,
-    marginBottom: spacing.xs,
-  },
-  disabledModelDescription: {
-    color: colors.mutedForeground,
-  },
-  modelProvider: {
-    fontSize: fontSize.xs,
-    color: colors.mutedForeground,
-    fontWeight: '500',
-  },
-  disabledModelProvider: {
-    color: colors.mutedForeground,
-  },
-});
+const createStyles = (colors: any) =>
+  StyleSheet.create({
+    selectorButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: colors.secondary,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      borderRadius: borderRadius.lg,
+      minWidth: 180,
+    },
+    selectorContent: {
+      flexDirection: "row",
+      alignItems: "center",
+      flex: 1,
+    },
+    selectedModelText: {
+      fontSize: fontSize.sm,
+      fontWeight: "600",
+      color: colors.foreground,
+      flex: 1,
+    },
+    miniPremiumBadge: {
+      marginLeft: spacing.xs,
+    },
+    modalContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    modalHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    modalTitle: {
+      fontSize: fontSize.xl,
+      fontWeight: "bold",
+      color: colors.foreground,
+    },
+    closeButton: {
+      padding: spacing.xs,
+    },
+    modalContent: {
+      flex: 1,
+      paddingHorizontal: spacing.lg,
+    },
+    section: {
+      marginVertical: spacing.lg,
+    },
+    sectionTitle: {
+      fontSize: fontSize.lg,
+      fontWeight: "bold",
+      color: colors.foreground,
+      marginBottom: spacing.md,
+    },
+    upgradePrompt: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.accent,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      borderRadius: borderRadius.md,
+      marginBottom: spacing.md,
+    },
+    upgradeText: {
+      fontSize: fontSize.sm,
+      color: colors.accentForeground,
+      marginLeft: spacing.xs,
+      fontWeight: "500",
+    },
+    modelItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+      borderRadius: borderRadius.md,
+      marginBottom: spacing.sm,
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    selectedModelItem: {
+      borderColor: colors.primary,
+      backgroundColor: colors.accent,
+    },
+    disabledModelItem: {
+      opacity: 0.6,
+    },
+    modelInfo: {
+      flex: 1,
+    },
+    modelHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: spacing.xs,
+    },
+    modelName: {
+      fontSize: fontSize.base,
+      fontWeight: "600",
+      color: colors.foreground,
+    },
+    selectedModelName: {
+      color: colors.accentForeground,
+    },
+    disabledModelName: {
+      color: colors.mutedForeground,
+    },
+    premiumBadge: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing.xs,
+      paddingVertical: 2,
+      borderRadius: 10,
+      marginLeft: spacing.sm,
+    },
+    premiumText: {
+      fontSize: 10,
+      fontWeight: "bold",
+      color: colors.primary,
+      marginLeft: 2,
+    },
+    modelDescription: {
+      fontSize: fontSize.sm,
+      color: colors.mutedForeground,
+      marginBottom: spacing.xs,
+    },
+    disabledModelDescription: {
+      color: colors.mutedForeground,
+    },
+    modelProvider: {
+      fontSize: fontSize.xs,
+      color: colors.mutedForeground,
+      fontWeight: "500",
+    },
+    disabledModelProvider: {
+      color: colors.mutedForeground,
+    },
+  });

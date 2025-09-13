@@ -22,15 +22,8 @@ export const WebViewScreen: React.FC = () => {
         >
           <Ionicons name="arrow-back" size={24} color={colors.foreground} />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={() => router.back()}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="close" size={24} color={colors.foreground} />
-        </TouchableOpacity>
       </View>
-      
+
       <WebView
         source={{ uri: url || "https://1ai.co" }}
         style={styles.webview}
@@ -43,27 +36,28 @@ export const WebViewScreen: React.FC = () => {
   );
 };
 
-const createStyles = (colors: any) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  backButton: {
-    padding: spacing.xs,
-  },
-  closeButton: {
-    padding: spacing.xs,
-  },
-  webview: {
-    flex: 1,
-  },
-});
+const createStyles = (colors: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      padding: spacing.xs,
+    },
+    closeButton: {
+      padding: spacing.xs,
+    },
+    webview: {
+      flex: 1,
+    },
+  });
